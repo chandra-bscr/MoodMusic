@@ -23,7 +23,7 @@ __pycache__/
 *.sqlite
 *.pyc
 *.pyo
-*.env
+.env
 
 # Ignore package files
 *.egg-info/
