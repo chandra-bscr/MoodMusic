@@ -1,0 +1,40 @@
+# Ignore compiled Python files
+*.pyc
+__pycache__/
+
+# Ignore the virtual environment folder (if using virtualenv or venv)
+ev8/
+env/
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+
+# Ignore the Flask instance folder (where your app configurations are stored)
+instance/
+
+# Ignore the Flask cache folder
+__pycache__/
+
+# Ignore the Flask log files
+*.log
+
+# Ignore any generated or sensitive files
+*.sqlite
+*.pyc
+*.pyo
+*.env
+
+# Ignore package files
+*.egg-info/
+dist/
+build/
+
+# Ignore local configuration files
+*.cfg.local
+
+# Ignore development or debugging tools
+.dev/
+.docker/
+
+# Ignore any files or directories specific to your environment or workflow
