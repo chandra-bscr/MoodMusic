@@ -11,14 +11,49 @@ from keras.models import model_from_json
 from flask import Flask, request, render_template
 from werkzeug.utils import secure_filename
 import statistics as st
-
+import spotipy
+from spotipy.oauth2 import SpotifyOAuth
+import random
+from dotenv import dotenv_values
+env_vars=dotenv_values()
 
 app = Flask(__name__)
 
+sp = spotipy.Spotify(auth_manager=SpotifyOAuth(client_id=env_vars['client_id'],
+                                               client_secret=env_vars['client_secret'],
+                                               redirect_uri='http://localhost:5000/callback',
+                                               scope='user-library-read'))
+
 @app.route("/")
 def home():
+    print("getting")
     return render_template("index1.html")
-    
+
+@app.route('/callback')
+def callback():
+    code = request.args.get('code')
+    token_info = sp.auth_manager.get_access_token(code)
+    access_token = token_info['access_token']
+    sp.set_auth(access_token)
+
+
+@app.route('/happy-songs' , methods = ['GET', 'POST'])
+def get_happy_songs():
+    results = sp.search(q='entertaining telugu songs', type='track', limit=50)
+    happy_songs = []
+    for track in results['tracks']['items']:
+        song_name = track['name']
+        artist_name = track['artists'][0]['name']
+        song_url = track['external_urls']['spotify']
+        image_url = track['album']['images'][0]['url']
+        happy_songs.append({
+            'song_name': song_name,
+            'artist_name': artist_name,
+            'song_url': song_url,
+            'image_url': image_url
+        })
+        random.shuffle(happy_songs)
+    return render_template("happy_songs.html",happy_songs=happy_songs)
     
 @app.route('/camera', methods = ['GET', 'POST'])
 def camera():
@@ -163,4 +198,4 @@ def join():
     return render_template("join_page.html")
     
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
